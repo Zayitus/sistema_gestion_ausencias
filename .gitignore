@@ -27,6 +27,10 @@ alembic/versions/
 Programa Ari/service_account.json
 Programa Ari/client_secret.json
 token_drive_user.json
+Programa Ari/*.json
 
 # Subidas locales
 uploads/
+
+# Carpeta externa (no versionar el proyecto externo de Ari)
+Programa Ari/
