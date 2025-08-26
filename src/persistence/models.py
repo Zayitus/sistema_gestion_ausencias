@@ -31,11 +31,12 @@ class Aviso(Base):
 	legajo: Mapped[str] = mapped_column(String(10), ForeignKey("employees.legajo"), nullable=False)
 	motivo: Mapped[str] = mapped_column(String(50), nullable=False)
 	fecha_inicio: Mapped[date] = mapped_column(Date, nullable=False)
-	fecha_fin: Mapped[date] = mapped_column(Date, nullable=False)
+	fecha_fin_estimada: Mapped[date] = mapped_column(Date, nullable=False)
 	duracion_estimdays: Mapped[int] = mapped_column(Integer, nullable=False)
 	estado_aviso: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
 	estado_certificado: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
 	documento_tipo: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+	fuera_de_termino: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 	adjunto: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 	created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
 
@@ -49,6 +50,7 @@ class Certificado(Base):
 	recibido_en: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
 	valido: Mapped[Optional[bool]] = mapped_column(Boolean, nullable=True)
 	notas: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+	archivo_path: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
 
 
 class Notificacion(Base):

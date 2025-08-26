@@ -50,7 +50,7 @@ def find_solape(session: Session, legajo: str, fecha_inicio: date, fecha_fin: da
 	q = (
 		select(Aviso)
 		.where(Aviso.legajo == legajo)
-		.where(~(Aviso.fecha_fin < fecha_inicio))
+		.where(~(Aviso.fecha_fin_estimada < fecha_inicio))
 		.where(~(Aviso.fecha_inicio > fecha_fin))
 	)
 	return session.execute(q).scalars().first()
@@ -79,11 +79,12 @@ def create_aviso(facts: dict[str, Any]) -> dict[str, Any]:
 			legajo=str(facts["legajo"]),
 			motivo=str(facts["motivo"]),
 			fecha_inicio=fi,
-			fecha_fin=ff,
+			fecha_fin_estimada=ff,
 			duracion_estimdays=int(facts["duracion_estimdays"]),
 			documento_tipo=facts.get("documento_tipo"),
 			estado_aviso=facts.get("estado_aviso"),
 			estado_certificado=facts.get("estado_certificado"),
+			fuera_de_termino=bool(facts.get("fuera_de_termino", False)),
 			adjunto=bool(facts.get("adjunto", False)),
 		)
 		session.add(av)
@@ -117,6 +118,8 @@ def update_certificado(id_aviso: str, meta_doc: dict[str, Any]) -> dict[str, Any
 		if "fecha_recepcion" in meta_doc and meta_doc["fecha_recepcion"]:
 			fr = _to_date_iso(meta_doc["fecha_recepcion"])
 			cert.recibido_en = datetime.combine(fr, datetime.min.time())
+		if "archivo_path" in meta_doc and meta_doc["archivo_path"]:
+			cert.archivo_path = str(meta_doc["archivo_path"])[:255]
 		# Derivar estado del certificado y reflejar en Aviso
 		if av.adjunto:
 			if cert.valido is False:
@@ -143,6 +146,7 @@ def update_certificado(id_aviso: str, meta_doc: dict[str, Any]) -> dict[str, Any
 			"estado_aviso": av.estado_aviso,
 			"estado_certificado": av.estado_certificado,
 			"fuera_de_termino": fuera_de_termino,
+			"archivo_path": getattr(cert, "archivo_path", None),
 		}
 
 
@@ -167,4 +171,19 @@ def historial_empleado(legajo: str, limit: int = 10) -> list[dict[str, Any]]:
 			}
 			for r in rows
 		]
+
+
+def get_aviso_status(id_aviso: str) -> Optional[dict[str, Any]]:
+	"""Obtiene estado de aviso/certificado por id."""
+	with session_scope() as session:
+		row = session.execute(select(Aviso).where(Aviso.id_aviso == id_aviso)).scalars().first()
+		if not row:
+			return None
+		return {
+			"id_aviso": row.id_aviso,
+			"legajo": row.legajo,
+			"estado_aviso": row.estado_aviso,
+			"estado_certificado": row.estado_certificado,
+			"documento_tipo": row.documento_tipo,
+		}
 

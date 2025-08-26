@@ -138,3 +138,21 @@ def ik_adjuntar(*, as_text: bool = False) -> Any:
 	return keyboard
 
 
+
+def kb_vinculo_familiar(*, as_text: bool = False) -> Any:
+	"""Teclado para vínculo familiar.
+
+	Opciones: padre, madre, hijo/a, cónyuge, otro.
+	"""
+	labels = ["padre", "madre", "hijo/a", "cónyuge", "otro"]
+	if as_text or not exists_aiogram:
+		return " / ".join(labels)
+	row1 = [KeyboardButton(text=l) for l in labels[:3]]
+	row2 = [KeyboardButton(text=l) for l in labels[3:5]]
+	keyboard = ReplyKeyboardMarkup(
+		keyboard=[row1, row2],
+		resize_keyboard=True,
+		one_time_keyboard=True,
+		input_field_placeholder="Elegí vínculo…",
+	)
+	return keyboard

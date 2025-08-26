@@ -53,6 +53,7 @@ def ensure_schema() -> None:
 			"recibido_en DATETIME",
 			"valido BOOLEAN",
 			"notas TEXT",
+			"archivo_path TEXT",
 		):
 			add_column_if_missing("certificados", coldef)
 
@@ -133,6 +134,30 @@ def seed_employees_synthetic(n: int = 200) -> int:
 	return created
 
 
+def seed_employees_examples() -> int:
+	"""Crea un pequeño set de empleados conocidos para pruebas manuales.
+
+	Evita duplicados si ya existen. Incluye el legajo 1111 para Ciro Medina
+	y otros legajos numéricos para pruebas.
+	"""
+	to_create = [
+		{"legajo": "1111", "nombre": "Ciro Medina", "area": "administración"},
+		{"legajo": "2222", "nombre": "Ana Gómez", "area": "producción"},
+		{"legajo": "3333", "nombre": "María López", "area": "ventas"},
+		{"legajo": "4444", "nombre": "Juan Pérez", "area": "logística"},
+		{"legajo": "5555", "nombre": "Lucía Fernández", "area": "producción"},
+	]
+	created = 0
+	with session_scope() as session:
+		existentes = {row[0] for row in session.query(Employee.legajo).all()}
+		for e in to_create:
+			if e["legajo"] in existentes:
+				continue
+			session.add(Employee(legajo=e["legajo"], nombre=e["nombre"], area=e["area"]))
+			created += 1
+	return created
+
+
 if __name__ == "__main__":
 	ensure_schema()
 	# Idempotente: si hay menos de 100, sembrar sintético
@@ -142,3 +167,5 @@ if __name__ == "__main__":
 		seed_employees_synthetic(200)
 	else:
 		pass
+	# Asegurar ejemplos conocidos
+	seed_employees_examples()

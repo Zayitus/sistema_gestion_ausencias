@@ -138,5 +138,25 @@ def msg_ok_creado(id_aviso: str | int | None) -> str:
 	return f"¡Listo! Tu aviso #{id_aviso} quedó creado 🎉"
 
 
+def msg_cierre_con_contexto(facts: dict) -> str:
+	"""Mensaje de cierre con tono contextual según motivo.
+
+	- nacimiento: felicitaciones
+	- fallecimiento: condolencias
+	- otros: cierre estándar
+	"""
+	mot = (facts.get("motivo") or "").lower()
+	if mot == "fallecimiento":
+		# Mensaje sobrio, sin emoji
+		return (
+			"Tu aviso fue registrado.\n"
+			"Lamentamos tu pérdida. RRHH se pondrá en contacto para acompañarte con el trámite."
+		)
+	base = msg_ok_creado(facts.get("id_aviso"))
+	if mot == "nacimiento":
+		return base + "\n¡Felicitaciones! RRHH se pondrá en contacto para explicar el trámite."
+	return base + "\nRRHH se pondrá en contacto para confirmarlo."
+
+
 def msg_error(message: str) -> str:
 	return f"Uy… hubo un problema: {message} ⚠️ Intentá nuevamente o pedime ayuda."

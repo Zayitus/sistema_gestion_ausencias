@@ -6,7 +6,7 @@ from typing import Optional
 try:
 	from aiogram import Bot, Dispatcher, F
 	from aiogram.filters import Command
-	from aiogram.types import Message
+	from aiogram.types import Message, CallbackQuery
 	exists_aiogram = True
 except Exception:  # aiogram no instalado aún
 	exists_aiogram = False
@@ -65,7 +65,12 @@ async def start_bot(token: str) -> None:
 				return
 			set_legajo(str(msg.chat.id), legajo_digits)
 			_dm.set_legajo_validado(str(msg.chat.id), legajo_digits)
-			await msg.reply(f"Listo, legajo {legajo_digits} verificado ✅")
+			# Incluir nombre si está disponible
+			nombre = getattr(emp, "nombre", None)
+			if nombre:
+				await msg.reply(f"Listo, {nombre} (legajo {legajo_digits}) verificado ✅")
+			else:
+				await msg.reply(f"Listo, legajo {legajo_digits} verificado ✅")
 		except Exception as e:
 			await msg.reply(f"No pude guardar el legajo: {e}")
 
@@ -102,14 +107,127 @@ async def start_bot(token: str) -> None:
 				print(f"📤 Respuesta del sistema: {result}")
 				
 				reply_text = result.get("reply_text", "Sistema procesado")
-				await msg.reply(reply_text)
+				reply_markup = result.get("reply_markup")
+				# Adjuntar teclados reales solo si aiogram está disponible y el objeto parece un markup
+				if exists_aiogram and reply_markup is not None and not isinstance(reply_markup, str):
+					await msg.reply(reply_text, reply_markup=reply_markup)
+				else:
+					await msg.reply(reply_text)
+				# Mensajes adicionales (ej.: pedir adjuntar documento)
+				for extra in (result.get("messages") or []):
+					text2 = extra.get("reply_text") or extra.get("text") or ""
+					mk2 = extra.get("reply_markup") or extra.get("markup")
+					if exists_aiogram and mk2 is not None and not isinstance(mk2, str):
+						await msg.reply(text2, reply_markup=mk2)
+					else:
+						await msg.reply(text2)
 			else:
-				await msg.reply("💾 Documento o tipo de mensaje no soportado aún")
+				# Manejo básico de documentos/imagenes
+				try:
+					f = msg.document or msg.photo[-1] if hasattr(msg, "photo") and msg.photo else msg.document  # type: ignore[attr-defined]
+					if f is None:
+						await msg.reply("💾 Documento o tipo de mensaje no soportado aún")
+						return
+					# Descargar archivo a uploads/ y además subirlo a Google Drive.
+					# Estructura local: uploads/<chat_id>/[<id_aviso>/]<file_id>.<ext>
+					path_dir = "uploads"
+					import os
+					from datetime import date
+					os.makedirs(path_dir, exist_ok=True)
+					file = await bot.get_file(f.file_id)  # type: ignore[attr-defined]
+					# Extensión: si es Document usamos su nombre; si es Photo, forzamos .jpg
+					file_ext = ""
+					if getattr(f, "file_name", None):
+						file_ext = os.path.splitext(f.file_name)[1]
+					elif getattr(msg, "photo", None):
+						file_ext = ".jpg"
+					local_name = f"{f.file_id}{file_ext}"  # type: ignore[attr-defined]
+					# Carpeta por chat siempre
+					chat_dir = os.path.join(path_dir, str(msg.chat.id))
+					os.makedirs(chat_dir, exist_ok=True)
+					local_path = os.path.join(chat_dir, local_name)
+					await bot.download_file(file.file_path, destination=local_path)
+
+					# Subir a Google Drive y obtener enlace
+					from ..utils.drive_upload import upload_file  # import aquí para evitar carga lenta inicial
+					try:
+						drive_link = upload_file(local_path, filename=os.path.basename(local_path), mime_type="image/jpeg" if file_ext.lower() in {".jpg", ".jpeg", ".png"} else "application/octet-stream")
+					except Exception as exc:
+						logging.warning(f"No se pudo subir a Drive: {exc}")
+						drive_link = ""
+
+					# Intentar vincular a último aviso del usuario (simple: por legajo en sesión si existe id_aviso en facts)
+					session_id = str(msg.chat.id)
+					state = _dm.sessions.get(session_id, {})
+					facts = state.get("facts", {})
+					id_aviso = facts.get("id_aviso")
+					if not id_aviso:
+						# Guardar como pendiente para vincular al confirmar
+						state["pending_doc"] = {
+							"archivo_nombre": os.path.basename(local_path),
+							"archivo_path": drive_link or local_path,
+							"documento_legible": True,
+							"documento_tipo": facts.get("documento_tipo"),
+							"fecha_recepcion": date.today().isoformat(),
+						}
+						_dm.sessions[session_id] = state
+						await msg.reply("Recibí el archivo ✅. Lo voy a asociar automáticamente cuando confirmes tu aviso.")
+					else:
+						from ..persistence.dao import update_certificado
+						# Mover a carpeta por id_aviso
+						id_dir = os.path.join(path_dir, str(msg.chat.id), id_aviso)
+						os.makedirs(id_dir, exist_ok=True)
+						new_path = os.path.join(id_dir, os.path.basename(local_path))
+						try:
+							os.replace(local_path, new_path)
+						except Exception:
+							new_path = local_path
+						res = update_certificado(id_aviso, {
+							"archivo_nombre": os.path.basename(local_path),
+							"archivo_path": drive_link or new_path,
+							"documento_tipo": facts.get("documento_tipo"),
+							"documento_legible": True,
+							"fecha_recepcion": facts.get("fecha_recepcion") or facts.get("fecha_inicio") or date.today().isoformat(),
+						})
+						await msg.reply(f"Documento recibido ✅. Estado certificado: {res.get('estado_certificado')}")
+				except Exception as e:
+					await msg.reply(f"No pude procesar el archivo: {e}")
 				
 		except Exception as e:
 			print(f"❌ ERROR: {e}")
 			logging.error(f"Error procesando mensaje: {e}", exc_info=True)
 			await msg.reply(f"Error: {str(e)}")
+
+	# Callbacks para inline keyboard de adjuntar certificado
+	@dp.callback_query()
+	async def handle_callbacks(cb: CallbackQuery) -> None:
+		try:
+			if not cb.data:
+				return
+			data = cb.data.lower()
+			session_id = str(cb.message.chat.id) if getattr(cb, "message", None) else str(cb.from_user.id)
+			if data in {"adjuntar_ahora", "adjuntar_despues"}:
+				text = "adjuntar ahora" if data == "adjuntar_ahora" else "enviar más tarde"
+				result = _dm.process_message(session_id, text)
+				reply_text = result.get("reply_text", "OK")
+				reply_markup = result.get("reply_markup")
+				await cb.answer()
+				if exists_aiogram and reply_markup is not None and not isinstance(reply_markup, str):
+					await cb.message.reply(reply_text, reply_markup=reply_markup)
+				else:
+					await cb.message.reply(reply_text)
+				for extra in (result.get("messages") or []):
+					text2 = extra.get("reply_text") or extra.get("text") or ""
+					mk2 = extra.get("reply_markup") or extra.get("markup")
+					if exists_aiogram and mk2 is not None and not isinstance(mk2, str):
+						await cb.message.reply(text2, reply_markup=mk2)
+					else:
+						await cb.message.reply(text2)
+		except Exception:
+			try:
+				await cb.answer("Error", show_alert=False)
+			except Exception:
+				pass
 
 	print(f"Handlers registrados, iniciando polling...")
 	

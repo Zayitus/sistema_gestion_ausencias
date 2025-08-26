@@ -1,0 +1,24 @@
+# Bot de Telegram
+python-telegram-bot==20.6
+apscheduler==3.10.4
+python-dotenv==1.0.1
+requests==2.32.3
+
+# Google Sheets / Drive
+pandas==2.2.2
+openpyxl==3.1.5
+gspread==6.1.2
+oauth2client==4.1.3
+google-auth==2.34.0
+google-auth-oauthlib==1.2.1
+google-auth-httplib2==0.2.0
+gspread-dataframe==3.3.1
+httplib2==0.22.0
+
+# OCR / imágenes
+pytesseract==0.3.13
+Pillow==10.4.0
+pdf2image==1.17.0
+PyMuPDF==1.24.9
+PyPDF2==3.0.1
+pdfplumber==0.11.4
