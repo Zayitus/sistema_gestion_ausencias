@@ -22,3 +22,11 @@ htmlcov/
 *.sqlite3
 alembic.ini
 alembic/versions/
+
+# Secretos y credenciales
+Programa Ari/service_account.json
+Programa Ari/client_secret.json
+token_drive_user.json
+
+# Subidas locales
+uploads/
