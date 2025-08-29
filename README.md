@@ -198,14 +198,23 @@ GET  /health           # Estado del sistema
 
 ## 📄 **Licencia**
 
-Este proyecto está desarrollado para uso académico y empresarial interno.
+MIT License - Este proyecto es de código abierto y puede ser utilizado libremente.
 
-## 🎯 **Autor**
+## 🎯 **Autores**
 
-**Sistema desarrollado por**: [Tu Nombre]  
-**Fecha**: Agosto 2025  
-**Versión**: 1.0.0  
+**Desarrollado por**:
+- Ariel Altamirano
+- Ezequiel Caballero  
+- Gastón Schvartz
+
+**Proyecto Académico**:
+- **Empresa**: Tecnomyl
+- **Materia**: Prácticas 2
+- **Carrera**: Técnico Superior en Ciencia de Datos e IA
+- **Institución**: Centro Politécnico Superior Malvinas Argentinas
+- **Fecha**: Agosto 2025
+- **Versión**: 1.0.0
 
 ---
 
-**© 2025 - Sistema de Gestión de Ausencias v1.0**
+**© 2025 - Sistema de Gestión de Ausencias v1.0 - Tecnomyl**
