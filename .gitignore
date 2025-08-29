@@ -28,6 +28,9 @@ Programa Ari/service_account.json
 Programa Ari/client_secret.json
 token_drive_user.json
 Programa Ari/*.json
+service_account.json
+client_secret.json
+*.json
 
 # Subidas locales
 uploads/

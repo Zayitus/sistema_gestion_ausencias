@@ -68,9 +68,9 @@ async def start_bot(token: str) -> None:
 			# Incluir nombre si está disponible
 			nombre = getattr(emp, "nombre", None)
 			if nombre:
-				await msg.reply(f"Listo, {nombre} (legajo {legajo_digits}) verificado ✅")
+				await msg.reply(f"Listo, {nombre} (legajo {legajo_digits}) verificado")
 			else:
-				await msg.reply(f"Listo, legajo {legajo_digits} verificado ✅")
+				await msg.reply(f"Listo, legajo {legajo_digits} verificado")
 		except Exception as e:
 			await msg.reply(f"No pude guardar el legajo: {e}")
 
@@ -91,22 +91,32 @@ async def start_bot(token: str) -> None:
 	# Handler simplificado para testing
 	@dp.message()
 	async def handle_message(msg: Message) -> None:
-		print(f"📩 MENSAJE RECIBIDO de {msg.chat.id}: {msg.text}")
+		print(f"MENSAJE RECIBIDO de {msg.chat.id}: {msg.text}")
 		logging.info(f"Mensaje recibido de {msg.chat.id}: {msg.text}")
 		
 		try:
 			# Respuesta simple primero para confirmar que funciona
 			if msg.text and msg.text.startswith('/start'):
-				await msg.reply("🤖 Bot funcionando! Soy el sistema de ausencias.")
+				await msg.reply("Bot funcionando! Soy el sistema de ausencias.")
 			elif msg.text and msg.text.startswith('/help'):
-				await msg.reply("📋 Puedo ayudarte con avisos de ausencias. Enviá tu legajo y motivo.")
+				await msg.reply("Puedo ayudarte con avisos de ausencias. Enviá tu legajo y motivo.")
 			elif msg.text:
-				print(f"💬 Procesando con DialogueManager: {msg.text}")
+				print(f"Procesando con DialogueManager: {msg.text}")
 				session_id = str(msg.chat.id)
 				result = _dm.process_message(session_id, msg.text)
-				print(f"📤 Respuesta del sistema: {result}")
+				# No imprimir el resultado completo para evitar emojis
+				# Limpiar preview de respuesta
+				reply_preview = str(result.get('reply_text', ''))[:50]
+				import re
+				reply_preview = re.sub(r'[\U0001F600-\U0001F6FF\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\U0001F1E0-\U0001F1FF\U00002600-\U000027BF\U0001F900-\U0001F9FF]+', '', reply_preview)
+				print(f"Respuesta generada: {reply_preview}...")
 				
 				reply_text = result.get("reply_text", "Sistema procesado")
+				# Limpiar emojis problemáticos
+				if reply_text:
+					import re
+					reply_text = re.sub(r'[\U0001F600-\U0001F6FF\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\U0001F1E0-\U0001F1FF\U00002600-\U000027BF\U0001F900-\U0001F9FF]+', '', reply_text)
+				
 				reply_markup = result.get("reply_markup")
 				# Adjuntar teclados reales solo si aiogram está disponible y el objeto parece un markup
 				if exists_aiogram and reply_markup is not None and not isinstance(reply_markup, str):
@@ -116,6 +126,11 @@ async def start_bot(token: str) -> None:
 				# Mensajes adicionales (ej.: pedir adjuntar documento)
 				for extra in (result.get("messages") or []):
 					text2 = extra.get("reply_text") or extra.get("text") or ""
+					# Limpiar emojis de mensajes adicionales
+					if text2:
+						import re
+						text2 = re.sub(r'[\U0001F600-\U0001F6FF\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\U0001F1E0-\U0001F1FF\U00002600-\U000027BF\U0001F900-\U0001F9FF]+', '', text2)
+					
 					mk2 = extra.get("reply_markup") or extra.get("markup")
 					if exists_aiogram and mk2 is not None and not isinstance(mk2, str):
 						await msg.reply(text2, reply_markup=mk2)
@@ -126,7 +141,7 @@ async def start_bot(token: str) -> None:
 				try:
 					f = msg.document or msg.photo[-1] if hasattr(msg, "photo") and msg.photo else msg.document  # type: ignore[attr-defined]
 					if f is None:
-						await msg.reply("💾 Documento o tipo de mensaje no soportado aún")
+						await msg.reply("Documento o tipo de mensaje no soportado aún")
 						return
 					# Descargar archivo a uploads/ y además subirlo a Google Drive.
 					# Estructura local: uploads/<chat_id>/[<id_aviso>/]<file_id>.<ext>
@@ -148,13 +163,15 @@ async def start_bot(token: str) -> None:
 					local_path = os.path.join(chat_dir, local_name)
 					await bot.download_file(file.file_path, destination=local_path)
 
-					# Subir a Google Drive y obtener enlace
-					from ..utils.drive_upload import upload_file  # import aquí para evitar carga lenta inicial
+					# Subir a Google Drive y obtener enlace (opcional)
+					drive_link = ""
 					try:
+						from ..utils.drive_upload import upload_file  # import aquí para evitar carga lenta inicial
 						drive_link = upload_file(local_path, filename=os.path.basename(local_path), mime_type="image/jpeg" if file_ext.lower() in {".jpg", ".jpeg", ".png"} else "application/octet-stream")
+						logging.info(f"Archivo subido a Drive: {drive_link}")
 					except Exception as exc:
-						logging.warning(f"No se pudo subir a Drive: {exc}")
-						drive_link = ""
+						logging.warning(f"Google Drive no configurado o error: {exc}")
+						drive_link = ""  # Continuar sin Drive
 
 					# Intentar vincular a último aviso del usuario (simple: por legajo en sesión si existe id_aviso en facts)
 					session_id = str(msg.chat.id)
@@ -162,16 +179,33 @@ async def start_bot(token: str) -> None:
 					facts = state.get("facts", {})
 					id_aviso = facts.get("id_aviso")
 					if not id_aviso:
-						# Guardar como pendiente para vincular al confirmar
-						state["pending_doc"] = {
-							"archivo_nombre": os.path.basename(local_path),
-							"archivo_path": drive_link or local_path,
-							"documento_legible": True,
-							"documento_tipo": facts.get("documento_tipo"),
-							"fecha_recepcion": date.today().isoformat(),
-						}
+						# Nuevo flujo: guardar certificado en facts para usar al crear aviso
+						facts["certificado_archivo_nombre"] = os.path.basename(local_path)
+						facts["certificado_archivo_path"] = drive_link or local_path
+						facts["certificado_documento_legible"] = True
+						facts["certificado_fecha_recepcion"] = date.today().isoformat()
+						facts["certificado_recibido"] = True
+						
+						# Actualizar sesión
+						state["facts"] = facts
 						_dm.sessions[session_id] = state
-						await msg.reply("Recibí el archivo ✅. Lo voy a asociar automáticamente cuando confirmes tu aviso.")
+						
+						await msg.reply("Certificado recibido y guardado.")
+						
+						# Continuar automáticamente con el flujo (simular "adjuntar ahora")
+						result = _dm.process_message(session_id, "adjuntar ahora")
+						if result and result.get("reply_text"):
+							reply_text = result["reply_text"]
+							# Limpiar emojis
+							import re
+							reply_text = re.sub(r'[\U0001F600-\U0001F6FF\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\U0001F1E0-\U0001F1FF\U00002600-\U000027BF\U0001F900-\U0001F9FF]+', '', reply_text)
+							await msg.reply(reply_text)
+							# Si hay mensajes adicionales
+							for extra in (result.get("messages") or []):
+								text2 = extra.get("reply_text") or extra.get("text") or ""
+								if text2:
+									text2 = re.sub(r'[\U0001F600-\U0001F6FF\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\U0001F1E0-\U0001F1FF\U00002600-\U000027BF\U0001F900-\U0001F9FF]+', '', text2)
+									await msg.reply(text2)
 					else:
 						from ..persistence.dao import update_certificado
 						# Mover a carpeta por id_aviso
@@ -189,12 +223,12 @@ async def start_bot(token: str) -> None:
 							"documento_legible": True,
 							"fecha_recepcion": facts.get("fecha_recepcion") or facts.get("fecha_inicio") or date.today().isoformat(),
 						})
-						await msg.reply(f"Documento recibido ✅. Estado certificado: {res.get('estado_certificado')}")
+						await msg.reply(f"Documento recibido. Estado certificado: {res.get('estado_certificado')}")
 				except Exception as e:
 					await msg.reply(f"No pude procesar el archivo: {e}")
 				
 		except Exception as e:
-			print(f"❌ ERROR: {e}")
+			print(f"ERROR: {e}")
 			logging.error(f"Error procesando mensaje: {e}", exc_info=True)
 			await msg.reply(f"Error: {str(e)}")
 
@@ -210,6 +244,9 @@ async def start_bot(token: str) -> None:
 				text = "adjuntar ahora" if data == "adjuntar_ahora" else "enviar más tarde"
 				result = _dm.process_message(session_id, text)
 				reply_text = result.get("reply_text", "OK")
+				# Limpiar emojis
+				import re
+				reply_text = re.sub(r'[\U0001F600-\U0001F6FF\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\U0001F1E0-\U0001F1FF\U00002600-\U000027BF\U0001F900-\U0001F9FF]+', '', reply_text)
 				reply_markup = result.get("reply_markup")
 				await cb.answer()
 				if exists_aiogram and reply_markup is not None and not isinstance(reply_markup, str):
@@ -218,6 +255,9 @@ async def start_bot(token: str) -> None:
 					await cb.message.reply(reply_text)
 				for extra in (result.get("messages") or []):
 					text2 = extra.get("reply_text") or extra.get("text") or ""
+					# Limpiar emojis de mensajes adicionales
+					if text2:
+						text2 = re.sub(r'[\U0001F600-\U0001F6FF\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\U0001F1E0-\U0001F1FF\U00002600-\U000027BF\U0001F900-\U0001F9FF]+', '', text2)
 					mk2 = extra.get("reply_markup") or extra.get("markup")
 					if exists_aiogram and mk2 is not None and not isinstance(mk2, str):
 						await cb.message.reply(text2, reply_markup=mk2)

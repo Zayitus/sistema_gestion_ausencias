@@ -38,7 +38,11 @@ class Aviso(Base):
 	documento_tipo: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
 	fuera_de_termino: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 	adjunto: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+	observaciones: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 	created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+	# Campos para sistema de recordatorios
+	recordatorio_22h_enviado: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+	telegram_user_id: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
 
 
 class Certificado(Base):
@@ -51,6 +55,7 @@ class Certificado(Base):
 	valido: Mapped[Optional[bool]] = mapped_column(Boolean, nullable=True)
 	notas: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 	archivo_path: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+	created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
 
 
 class Notificacion(Base):
@@ -62,6 +67,7 @@ class Notificacion(Base):
 	enviado_en: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
 	canal: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
 	payload: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
+	created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
 
 
 class Auditoria(Base):

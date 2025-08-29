@@ -1,159 +1,211 @@
-# Sistema Experto de Ausencias
+# 🤖 Sistema de Gestión de Ausencias Laborales
 
-Proyecto de sistema experto basado en reglas para gestionar avisos de ausencias laborales. Incluye motor de inferencia (forward/backward chaining), base de conocimiento externa (glosario + reglas), gestor de diálogo con slot-filling y bot de Telegram.
+Sistema integral de gestión de ausencias laborales que automatiza y digitaliza el proceso completo de solicitud, validación y seguimiento de ausencias de empleados, integrando un **Bot de Telegram** para empleados con un **Dashboard Web** para supervisión de RRHH.
 
-## Características
-- Motor experto con encadenamiento hacia adelante (`forward_chain`) y un backward-chaining básico para completar slots.
-- Base de conocimiento editable en archivos JSON: `docs/glossary.json` y `docs/rules.json` (cargados y validados por `src/engine/kb_loader.py`).
-- Explicabilidad: trazas con `regla_id`, “por qué” y hechos usados (`src/engine/explain.py`).
-- Interfaz conversacional vía Telegram (aiogram 3.x) y demo local sin red.
-- Persistencia con SQLAlchemy (SQLite por defecto) y export a CSV para Power BI.
+## 🚀 **Características Principales**
 
-## Requisitos
-- Python 3.10+
-- (Opcional) Cuenta de bot de Telegram y token
+- ✅ **Bot de Telegram Conversacional** - Interfaz intuitiva para empleados
+- ✅ **Dashboard Web RRHH** - Supervisión centralizada y filtros avanzados
+- ✅ **Gestión de Certificados** - Subida y visualización de documentos médicos
+- ✅ **Recordatorios Automáticos** - Notificaciones inteligentes a las 22:00
+- ✅ **Validación de Empleados** - Manejo de legajos provisionales
+- ✅ **Sistema de Prioridades** - Identificación automática de casos urgentes
+- ✅ **Estadísticas en Tiempo Real** - Métricas actualizadas automáticamente
 
-## Estructura del proyecto (resumen)
+## 🏗️ **Arquitectura**
+
 ```
-experto-ausencias/
-  src/
-    app.py                 # entrypoint del bot (polling)
-    config.py              # variables de entorno (pydantic + dotenv)
-    dialogue/              # gestor de diálogo y prompts
-    engine/                # motor de inferencia + KB loader + explicaciones
-    notify/                # ruteo de notificaciones (placeholder)
-    persistence/           # modelos, DAO y exportaciones
-    telegram/              # bot y teclados (aiogram)
-    utils/                 # normalización (fechas, motivos, etc.)
-  docs/
-    glossary.json          # glosario (dominio y tipos de variables)
-    rules.json             # reglas de negocio (when/then + certainty)
-    Arbol_Dialogo_v1.md    # guía de diálogo/slots
-    Reglas_BC_v1.md        # resumen funcional de reglas
-  demo_local.py            # demo sin red (motor + diálogo)
-  bot_webhook.py           # modo webhook (ngrok)
-  bot_resiliente.py        # modo polling con reintentos
-  setup_telegram.py        # diagnóstico/conexión a Telegram
-  CONECTAR_TELEGRAM.md     # guía rápida de conectividad
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   EMPLEADOS     │    │      RRHH        │    │   BASE DE       │
+│  (Telegram Bot) │◄──►│  (Dashboard Web) │◄──►│    DATOS        │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+         │                       │                       │
+         ▼                       ▼                       ▼
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│ Recordatorios   │    │   Certificados   │    │  Almacenamiento │
+│  Automáticos    │    │     Médicos      │    │  de Archivos    │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
 ```
 
-## Configuración
-1) Crear entorno virtual e instalar dependencias
-```powershell
+## 🛠️ **Stack Tecnológico**
+
+- **Backend**: Python 3.11+
+- **Bot Framework**: aiogram 3.x
+- **Web Framework**: aiohttp
+- **Base de Datos**: SQLite + SQLAlchemy 2.x
+- **Frontend**: HTML5 + CSS3 + JavaScript (Vanilla)
+- **Scheduler**: AsyncIO + Custom Tasks
+
+## 📦 **Instalación**
+
+### **Requisitos**
+- Python 3.11 o superior
+- Token de Bot de Telegram (obtener de [@BotFather](https://t.me/BotFather))
+
+### **Pasos de Instalación**
+
+1. **Clonar el repositorio**
+```bash
+git clone [URL_DEL_REPO]
+cd Repo-Actualizado
+```
+
+2. **Crear entorno virtual**
+```bash
 python -m venv .venv
-.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-```
-Linux/macOS:
-```bash
-python3 -m venv .venv
+# Windows
+.venv\Scripts\activate
+# Linux/Mac  
 source .venv/bin/activate
+```
+
+3. **Instalar dependencias**
+```bash
 pip install -r requirements.txt
 ```
 
-2) Variables de entorno (.env)
-Copia `env.example` a `.env` y ajusta:
-```
-TELEGRAM_TOKEN=
-DATABASE_URL=sqlite:///./ausencias.db
-LOG_LEVEL=INFO
-DEMO_EXPORT=true
-```
-- `TELEGRAM_TOKEN`: requerido para usar Telegram.
-- `DATABASE_URL`: por defecto SQLite local.
-- `DEMO_EXPORT`: habilita comando demo `/export_csv`.
-
-3) Inicializar base y datos demo
+4. **Configurar variables de entorno**
 ```bash
-python -m src.persistence.seed
+cp .env.example .env
+# Editar .env con tus valores reales
 ```
 
-## Ejecución
-### A) Modo polling (Telegram)
+5. **Inicializar base de datos**
 ```bash
-python -m src.app
+python src/persistence/seed.py
 ```
-Requiere `TELEGRAM_TOKEN` válido y conectividad a Telegram. Handlers básicos: `/start`, `/help`, `/id <legajo>`, `/export_csv` (si `DEMO_EXPORT=true`).
 
-### B) Modo webhook (ngrok)
-1. Inicia ngrok en otro terminal (HTTPS → puerto 8080):
+## 🚀 **Ejecución**
+
+### **Iniciar el Sistema Completo**
+
+1. **Bot de Telegram + Recordatorios**
 ```bash
-ngrok http 8080
+python run_bot.py
 ```
-2. Ejecuta el bot webhook:
+
+2. **Dashboard Web** (puerto 8090)
 ```bash
-python bot_webhook.py
+python dashboard_server.py
 ```
-El script detecta automáticamente la URL pública y configura el webhook.
 
-### C) Demo local (sin red)
-```bash
-python demo_local.py
+### **Acceso al Dashboard**
+- URL: http://127.0.0.1:8090
+- Sin autenticación requerida (red interna)
+
+## 📱 **Uso del Sistema**
+
+### **Para Empleados (Telegram)**
+1. Buscar el bot en Telegram
+2. Enviar `/start` para comenzar
+3. Seguir el flujo conversacional:
+   - Ingresar legajo
+   - Seleccionar motivo de ausencia
+   - Especificar fecha y duración
+   - Adjuntar certificado (si es requerido)
+   - Confirmar solicitud
+
+### **Para RRHH (Dashboard Web)**
+- **Vista Principal**: Estadísticas resumidas y tabla de ausencias
+- **Filtros**: Por estado, motivo, fecha y sector
+- **Certificados**: Acceso directo a documentos adjuntos
+- **Prioridades**: Identificación visual de casos urgentes
+- **Validaciones**: Gestión de empleados provisionales
+
+## 📋 **Tipos de Ausencia Soportados**
+
+- **Enfermedad Inculpable** *(requiere certificado)*
+- **Enfermedad Familiar** *(requiere certificado)*
+- **ART** - Accidente de Trabajo
+- **Fallecimiento** - Familiar directo
+- **Nacimiento** - Hijo/a
+- **Matrimonio** - Propio o familiar
+- **Paternidad** - Licencia por paternidad
+- **Permiso Gremial** - Actividades sindicales
+
+## 🔄 **Sistema de Recordatorios**
+
+- **Horario**: Todos los días a las 22:00
+- **Objetivo**: Recordar certificados médicos pendientes
+- **Condición**: Solo ausencias registradas el mismo día
+- **Anti-spam**: Un recordatorio por solicitud
+
+## 📊 **Documentación Completa**
+
+- **[Documentación Técnica](DOCUMENTACION_TECNICA.md)** - Arquitectura y detalles técnicos
+- **[Manual de Usuario RRHH](MANUAL_USUARIO_RRHH.md)** - Guía completa para RRHH
+- **[Guía de Funcionamiento](GUIA_FUNCIONAMIENTO.md)** - Explicación detallada del sistema
+- **[Presentación del Proyecto](PRESENTACION_PROYECTO.md)** - Resumen para presentaciones
+
+## 🗂️ **Estructura del Proyecto**
+
 ```
-Simula conversación y muestra ejecución del motor experto sin Telegram.
-
-### D) Bot resiliente (polling con reintentos)
-```bash
-python bot_resiliente.py
+Repo-Actualizado/
+├── src/
+│   ├── dialogue/         # Lógica del bot conversacional
+│   ├── persistence/      # Base de datos y modelos
+│   ├── reminders/        # Sistema de recordatorios
+│   ├── telegram/         # Bot de Telegram
+│   ├── utils/           # Utilidades y validaciones
+│   └── web/             # Dashboard web y API
+├── uploads/             # Certificados médicos
+├── run_bot.py          # Ejecutor principal del bot
+├── dashboard_server.py  # Servidor web
+└── docs/               # Documentación adicional
 ```
-Pensado para redes problemáticas; incorpora reintentos y mensajes de ayuda.
 
-### Diagnóstico de conectividad
-```bash
-python setup_telegram.py
+## ⚡ **API Endpoints**
+
 ```
-Prueba token, verifica ngrok y sugiere alternativas (hotspot, VPN, etc.). Ver `CONECTAR_TELEGRAM.md` para guía rápida.
-
-## Cómo usar (flujo típico)
-1. Usuario envía su legajo (`/id 1001` o “legajo: L1001”).
-2. Bot pide motivo, fecha de inicio y días estimados (slot-filling).
-3. El motor deriva `documento_tipo` y estados (`estado_aviso`, `estado_certificado`).
-4. Si corresponde, solicita adjuntar certificado; valida legibilidad y plazos (fuera de término).
-5. Confirma y persiste el `aviso` con `id_aviso = A-YYYYMMDD-####`.
-
-## Motor de inferencia (resumen técnico)
-- Forward chaining: `src/engine/inference.py::forward_chain(facts)`
-  - Aplica reglas `when/then` desde `docs/rules.json` sobre la memoria de trabajo (`facts`).
-  - Combina `certainty` simple por variable y genera top-3 conclusiones + trazas.
-  - Deriva estados auxiliares: `fecha_fin_estimada`, `estado_certificado`, `fuera_de_termino`, duplicados.
-- Backward chaining: `src/engine/inference.py::backward_chain(goal, facts)`
-  - Orientado a metas del diálogo: `crear_aviso`, `adjuntar_certificado`, `consultar_estado`.
-  - Devuelve slots faltantes (`need_info`) o dispara una pasada de forward si está completo.
-- Carga/validación de KB: `src/engine/kb_loader.py` (glosario y reglas con validaciones de tipos, operadores y variables).
-- Explicaciones: `src/engine/explain.py` (formato compactado y trazas).
-
-## Base de conocimiento
-- Glosario (`docs/glossary.json`): define variables, tipos (`string`, `int`, `date`, `enum`, `boolean`, `list`) y dominios (enums).
-- Reglas (`docs/rules.json`): lista de reglas con `id`, `when` (condiciones) y `then` (acciones `set/append`, `certainty`, `explanation`).
-- Ejemplos de reglas incluidas:
-  - Mapear motivo → documento requerido (p. ej., `enfermedad_inculpable` → `certificado_medico`).
-  - Ruteo de notificaciones (RRHH siempre; médico laboral, delegado, jefe de producción según contexto).
-  - ART sin documento inicial; estados por certificado.
-
-## Persistencia y exportación
-- ORM: SQLAlchemy 2.x con modelos en `src/persistence/models.py`.
-- DAO en `src/persistence/dao.py`:
-  - `create_aviso(facts)`: valida solapes, genera `id_aviso`, persiste.
-  - `update_certificado(id_aviso, meta_doc)`: actualiza certificado y estados.
-  - `historial_empleado(legajo, limit)`.
-- Export a CSV: `src/persistence/export_powerbi.py` → genera `exports/*.csv` para Power BI/Excel.
-
-## Pruebas
-Ejecutar test suite:
-```bash
-pytest
+GET  /api/ausencias     # Lista de ausencias con filtros
+GET  /api/stats         # Estadísticas resumidas
+GET  /api/certificado/{id} # Descarga de certificado
+GET  /health           # Estado del sistema
 ```
-Cubre normalización, motor, diálogo y persistencia.
 
-## Solución de problemas
-- Telegram no conecta: usa `python setup_telegram.py` o seguí `CONECTAR_TELEGRAM.md` (hotspot móvil recomendado).
-- Falta token: configurar `TELEGRAM_TOKEN` en `.env`.
-- DB vacía: correr `python -m src.persistence.seed` para crear esquema y datos demo.
-- aiogram no instalado: `pip install -r requirements.txt`.
+## 🔒 **Seguridad**
 
-## Licencia
-Uso académico/educativo. Ajustar según necesidad del repositorio.
+- ✅ Validación de entrada en todos los endpoints
+- ✅ Sanitización de nombres de archivo
+- ✅ Control de acceso por telegram_user_id
+- ✅ Logs de auditoría completos
+- ✅ Exclusión de secretos del repositorio
 
-## Créditos
-- Basado en principios de sistemas expertos (Giarratano & Riley) y arquitectura conversacional con aiogram.
-- Desarrollo y documentación: equipo del proyecto.
+## 🚨 **Troubleshooting**
+
+### **Bot no responde**
+- Verificar token de Telegram en .env
+- Comprobar conexión a internet
+- Revisar logs de error
+
+### **Dashboard no carga**
+- Verificar puerto disponible (8090)
+- Comprobar permisos de archivo
+- Revisar logs del servidor
+
+### **Certificados no se ven**
+- Validar rutas de archivo en uploads/
+- Comprobar permisos de lectura
+- Verificar formato de archivo soportado
+
+## 📈 **Contribución**
+
+1. Fork el repositorio
+2. Crear rama feature (`git checkout -b feature/nueva-funcionalidad`)
+3. Commit cambios (`git commit -am 'Agregar nueva funcionalidad'`)
+4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
+5. Crear Pull Request
+
+## 📄 **Licencia**
+
+Este proyecto está desarrollado para uso académico y empresarial interno.
+
+## 🎯 **Autor**
+
+**Sistema desarrollado por**: [Tu Nombre]  
+**Fecha**: Agosto 2025  
+**Versión**: 1.0.0  
+
+---
+
+**© 2025 - Sistema de Gestión de Ausencias v1.0**

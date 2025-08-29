@@ -1,8 +1,8 @@
-START_PROMPT = "¡Hola! Soy el asistente de ausencias. ¿En qué te puedo dar una mano hoy? 🙂"
+START_PROMPT = "¡Hola! Soy el asistente de ausencias. ¿En qué te puedo dar una mano hoy?"
 
 PROMPTS = {
 	"crear_aviso": {
-		"legajo": "¿Me pasás tu legajo? (solo números/letras) 🆔",
+		"legajo": "¿Me pasás tu legajo? (solo números/letras)",
 		"motivo": (
 			"""Elegí el motivo:
 	- art
@@ -14,22 +14,22 @@ PROMPTS = {
 	- paternidad
 	- permiso_gremial"""
 		),
-		"fecha_inicio": "¿Desde qué fecha querés iniciar el aviso? Podés decir 'hoy', 'mañana' o pasar la fecha (YYYY-MM-DD / DD/MM/AAAA) 📅",
-		"duracion_estimdays": "¿Por cuántos días estimás la ausencia? (número entero) 📏",
-		"vinculo_familiar": "Si es por enfermedad_familiar, indicá el vínculo: padre, madre, hijo/a, cónyuge u otro 👪",
+		"fecha_inicio": "¿Desde qué fecha querés iniciar el aviso? Podés decir 'hoy', 'mañana' o pasar la fecha (YYYY-MM-DD / DD/MM/AAAA)",
+		"duracion_estimdays": "¿Por cuántos días estimás la ausencia? (número entero)",
+		"vinculo_familiar": "Si es por enfermedad_familiar, indicá el vínculo: padre, madre, hijo/a, cónyuge u otro",
 	},
 	"adjuntar_certificado": {
-		"id_aviso": "Decime el ID del aviso o, si no lo tenés, tu legajo y la fecha de inicio 🔎",
-		"adjunto_certificado": "Si lo tenés a mano, adjuntá el documento (PDF/JPG/PNG). También podés decir 'adjunto' para enviarlo luego 📎",
+		"id_aviso": "Decime el ID del aviso o, si no lo tenés, tu legajo y la fecha de inicio",
+		"adjunto_certificado": "Si lo tenés a mano, adjuntá el documento (PDF/JPG/PNG). También podés decir 'adjunto' para enviarlo luego",
 	},
 	"consultar_estado": {
-		"id_aviso": "¿Me compartís el ID del aviso o tu legajo para buscarlo? 🗂️",
+		"id_aviso": "¿Me compartís el ID del aviso o tu legajo para buscarlo?",
 	},
 	"modificar_aviso": {
-		"duracion_estimdays": "¿A cuántos días querés cambiar la duración estimada? ✏️",
+		"duracion_estimdays": "¿A cuántos días querés cambiar la duración estimada?",
 	},
 	"cancelar_aviso": {
-		"confirm": "¿Confirmás que querés cancelar el aviso? Escribí CONFIRMAR para avanzar ❌",
+		"confirm": "¿Confirmás que querés cancelar el aviso? Escribí CONFIRMAR para avanzar",
 	},
 }
 
@@ -52,11 +52,11 @@ def msg_saludo() -> str:
 
 	No altera la lógica; solo texto de presentación.
 	"""
-	return "¡Hola! 👋 Soy el asistente de ausencias. Te acompaño para crear avisos, adjuntar certificados o consultar estados."
+	return "Soy el Asistente de ausencias, voy a ayudarte a registrar una nueva ausencia, por favor ingresa tu número de legajo."
 
 
 def msg_pedir_legajo() -> str:
-	return "¿Me pasás tu legajo? (solo números/letras) 🆔"
+	return "¿Me pasás tu legajo? (solo números/letras)"
 
 
 def msg_pedir_motivo(opciones: list[str] | tuple[str, ...]) -> str:
@@ -82,11 +82,11 @@ def msg_pedir_motivo(opciones: list[str] | tuple[str, ...]) -> str:
 
 
 def msg_pedir_fecha() -> str:
-	return "¿Desde qué fecha querés iniciar el aviso? Decime 'hoy', 'mañana' o una fecha (YYYY-MM-DD / DD/MM/AAAA) 📅"
+	return "¿Desde qué fecha querés iniciar el aviso? Decime 'hoy', 'mañana' o una fecha (YYYY-MM-DD / DD/MM/AAAA)"
 
 
 def msg_pedir_dias() -> str:
-	return "¿Cuántos días estimás de ausencia? Indicá un número entero (p. ej., 1, 3, 10) 📏"
+	return "¿Cuántos días estimás de ausencia? Indicá un número entero (p. ej., 1, 3, 10)"
 
 
 def msg_pedir_certificado(tipo: str | None) -> str:
@@ -97,7 +97,7 @@ def msg_pedir_certificado(tipo: str | None) -> str:
 	t = tipo or "certificado"
 	return (
 		f"Si tenés el {t} a mano, podés adjuntarlo ahora (PDF/JPG/PNG). "
-		"Si preferís, podés enviarlo más tarde. 📎"
+		"Si preferís, podés enviarlo más tarde."
 	)
 
 
@@ -111,7 +111,7 @@ def msg_resumen(facts: dict, traza: str | None = None) -> str:
 	dur = facts.get("duracion_estimdays") or "—"
 	est = facts.get("estado_aviso") or "—"
 	ida = facts.get("id_aviso")
-	flag = " ⏰ fuera de término" if facts.get("fuera_de_termino") else ""
+	flag = " (fuera de término)" if facts.get("fuera_de_termino") else ""
 	lineas: list[str] = []
 	if ida:
 		lineas.append(f"ID aviso: {ida}")
@@ -120,13 +120,13 @@ def msg_resumen(facts: dict, traza: str | None = None) -> str:
 	lineas.append(f"Días (estimado): {dur}")
 	lineas.append(f"Estado: {est}{flag}")
 	if traza:
-		lineas.append(f"ℹ️ {traza}")
+		lineas.append(f"Info: {traza}")
 	return "\n".join(lineas)
 
 
 def msg_confirmar(resumen: str) -> str:
 	return (
-		"¿Confirmamos estos datos? ✅\n"
+		"¿Confirmamos estos datos?\n"
 		f"{resumen}\n"
 		"Elegí 'Confirmar' o 'Editar'."
 	)
@@ -134,8 +134,8 @@ def msg_confirmar(resumen: str) -> str:
 
 def msg_ok_creado(id_aviso: str | int | None) -> str:
 	if id_aviso is None:
-		return "¡Listo! Tu aviso quedó creado 🎉"
-	return f"¡Listo! Tu aviso #{id_aviso} quedó creado 🎉"
+		return "¡Listo! Tu aviso quedó creado"
+	return f"¡Listo! Tu aviso #{id_aviso} quedó creado"
 
 
 def msg_cierre_con_contexto(facts: dict) -> str:
@@ -159,4 +159,4 @@ def msg_cierre_con_contexto(facts: dict) -> str:
 
 
 def msg_error(message: str) -> str:
-	return f"Uy… hubo un problema: {message} ⚠️ Intentá nuevamente o pedime ayuda."
+	return f"Uy… hubo un problema: {message} Intentá nuevamente o pedime ayuda."

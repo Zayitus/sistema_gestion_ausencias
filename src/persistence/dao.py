@@ -187,3 +187,88 @@ def get_aviso_status(id_aviso: str) -> Optional[dict[str, Any]]:
 			"documento_tipo": row.documento_tipo,
 		}
 
+
+def crear_aviso_simple(aviso_data: dict[str, Any]) -> dict[str, Any]:
+	"""Crea un aviso de ausencia de forma simple para el nuevo flujo."""
+	try:
+		with session_scope() as session:
+			# Extraer datos
+			legajo = str(aviso_data["legajo"])
+			motivo = str(aviso_data["motivo"])
+			fecha_inicio = _to_date_iso(aviso_data["fecha_inicio"])
+			duracion_dias = int(aviso_data["duracion_dias"])
+			requiere_certificado = bool(aviso_data.get("requiere_certificado", False))
+			certificado_path = aviso_data.get("certificado_path")
+			legajo_provisional = bool(aviso_data.get("legajo_provisional", False))
+			nombre_provisional = aviso_data.get("nombre_provisional", "")
+			telegram_user_id = aviso_data.get("telegram_user_id")
+			
+			# Calcular fecha fin
+			fecha_fin = fecha_inicio + timedelta(days=duracion_dias - 1)
+			
+			# Verificar solapamientos (opcional, por ahora no bloqueamos)
+			solape = find_solape(session, legajo, fecha_inicio, fecha_fin)
+			
+			# Generar ID único
+			id_aviso = _gen_id_aviso(session, fecha_inicio)
+			
+			# Determinar documento_tipo según motivo
+			documento_tipo = None
+			if requiere_certificado:
+				if motivo == "enfermedad_inculpable":
+					documento_tipo = "certificado_medico"
+				elif motivo == "enfermedad_familiar":
+					documento_tipo = "certificado_medico"
+			
+			# Crear aviso
+			aviso = Aviso(
+				id_aviso=id_aviso,
+				legajo=legajo,
+				motivo=motivo,
+				fecha_inicio=fecha_inicio,
+				fecha_fin_estimada=fecha_fin,
+				duracion_estimdays=duracion_dias,
+				documento_tipo=documento_tipo,
+				adjunto=bool(certificado_path),
+				estado_aviso="incompleto" if requiere_certificado and not certificado_path else "completo",
+				estado_certificado="pendiente" if requiere_certificado and not certificado_path else None,
+				observaciones=f"Legajo {'PROVISIONAL - ' + nombre_provisional + ' - validar con RRHH' if legajo_provisional else 'verificado'}",
+				telegram_user_id=telegram_user_id
+			)
+			
+			session.add(aviso)
+			session.flush()  # Para obtener el ID
+			
+			# Si hay certificado, crear registro
+			if certificado_path and requiere_certificado:
+				certificado = Certificado(
+					id_aviso=id_aviso,
+					tipo=documento_tipo,
+					archivo_path=str(certificado_path)[:255],
+					valido=True,  # Asumir válido por defecto
+					recibido_en=datetime.now()
+				)
+				session.add(certificado)
+				
+				# Actualizar estado del aviso
+				aviso.estado_certificado = "validado"
+				aviso.estado_aviso = "completo"
+			
+			return {
+				"success": True,
+				"id_aviso": id_aviso,
+				"legajo": legajo,
+				"motivo": motivo,
+				"fecha_inicio": fecha_inicio.isoformat(),
+				"duracion_dias": duracion_dias,
+				"requiere_certificado": requiere_certificado,
+				"legajo_provisional": legajo_provisional,
+				"solape_detectado": bool(solape)
+			}
+			
+	except Exception as e:
+		return {
+			"success": False,
+			"error": str(e)
+		}
+

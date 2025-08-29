@@ -1,0 +1,215 @@
+legajo,nombre,area,puesto,fecha_ingreso,turno,activo
+L1000,Empleado 1,,,,,True
+L1001,Empleado 2,,,,,True
+L1002,Empleado 3,,,,,True
+L1003,Empleado 4,,,,,True
+L1004,Empleado 5,,,,,True
+L1005,Empleado 6,,,,,True
+L1006,Empleado 7,,,,,True
+L1007,Empleado 8,,,,,True
+L1008,Empleado 9,,,,,True
+L1009,Empleado 10,,,,,True
+1000,Sofia Belen Benjamin Rodriguez Sanchez,ventas,Gerente de hoteles o restaurantes,2020-04-20,tarde,True
+1001,Joaquina Felipe Peralta,logística,Cuidador de animales,2024-03-02,mañana,True
+1002,Isabella Ramirez Romero,producción,Recolector de basura y material reciclable,2024-01-29,tarde,True
+1003,Emma Juan Bautista Suarez,logística,Diseñador de interior,2022-09-04,mañana,True
+1004,Dr(a). Felipe Godoy,administración,Platero,2023-05-01,tarde,True
+1005,Lautaro Benjamin Bianca Garcia,logística,Fontanero,2019-01-08,tarde,True
+1006,Ignacio Gomez,ventas,Tramper,2024-04-15,mañana,True
+1007,Dr(a). Bianca Ruiz,ventas,Especialista en políticas de administración,2025-04-25,noche,True
+1008,Mia Valentina Sosa Mendoza,logística,Instalador y reparador en tecnología de la información y las comunicaciones,2018-09-30,mañana,True
+1009,Juan Ignacio Santino Lopez Valdez,producción,"Operador de máquinas pulidoras, galvanizadoras y recubridoras de metales ",2023-01-25,tarde,True
+1010,Sr(a). Felipe Rodriguez,producción,Técnico de prótesis médicas y dentales,2023-03-23,noche,True
+1011,Guadalupe Benitez Martinez,ventas,Arquitecto,2021-07-03,mañana,True
+1012,Martina Martinez,administración,Asistente de venta,2024-02-04,noche,True
+1013,Emma Aguero,logística,Peón de jardinería y horticultura,2020-04-29,noche,True
+1014,Agustin Lopez Chavez,producción,Empleado de servicios de apoyo a la producción,2023-09-20,mañana,True
+1015,Julieta Sosa Perez,producción,Maleter,2020-04-06,noche,True
+1016,Dr(a). Franco Villalba,ventas,Cocinero de comidas rápidas,2020-09-04,mañana,True
+1017,Ignacio Maia Diaz,ventas,Oficial de las fuerzas armadas,2025-07-23,noche,True
+1018,Santiago Muñoz Rojas,producción,Administrador de sistemas,2015-10-09,noche,True
+1019,Nahiara Jazmin Sara Medina Diaz,ventas,Soldador y oxicortador,2023-11-13,noche,True
+1020,Dylan Sanchez Sanchez,logística,Director de servicios de tecnología de la información y las comunicaciones,2024-08-30,noche,True
+1021,Thiago Emanuel Angel Gabriel Cabrera,logística,Asistente veterinario,2016-08-20,mañana,True
+1022,Mateo Sosa Gonzalez,producción,Operario de la elaboración de productos lácteos,2018-03-02,tarde,True
+1023,Agustin Lopez Gimenez,producción,Químico,2023-05-24,tarde,True
+1024,Santiago Vazquez,logística,Chapista,2019-11-08,tarde,True
+1025,Dr(a). Sara Gonzalez,producción,Supervisor en ingeniería de minas,2021-10-21,mañana,True
+1026,Emilia Malena Garcia Gonzalez,producción,Profesional en redes de computadores,2017-05-21,mañana,True
+1027,Facundo Garcia Gonzalez,producción,Mecánico y reparador en electrónica,2021-07-01,noche,True
+1028,Juan Cruz Maldonado,logística,Biólogo,2017-08-20,mañana,True
+1029,Clara Salvador Moreno Torres,administración,Auxiliar de maestro,2022-10-08,mañana,True
+1030,Samuel Acosta Garcia,ventas,Cartógrafo,2021-06-18,noche,True
+1031,Guadalupe Sosa,administración,Operador de instalaciones de procesamiento de metales,2021-05-30,mañana,True
+1032,Dr(a). Lucas Ruiz,ventas,Operador de instalaciones de refinación de petróleo y gas natural,2023-01-19,noche,True
+1033,Gabriel Sosa Vazquez,producción,Especialista en políticas de administración,2019-06-05,tarde,True
+1034,Benjamin Sofia Belen Farias Campos,logística,Operador de instalaciones de procesamiento de minerales y rocas,2022-09-17,tarde,True
+1035,Luciano Gomez,producción,Lavandero,2022-12-06,tarde,True
+1036,Sr(a). Elena Maldonado,logística,Profesional de nivel medio del derecho y servicios legales,2019-11-16,tarde,True
+1037,Rosario Olivia Velazquez,logística,Operador de máquinas lavarropas,2016-06-18,mañana,True
+1038,Santiago Romero Nuñez,producción,Productor y trabajador calificado de explotaciones agropecuarias mixtas,2017-08-17,mañana,True
+1039,Bautista Lucia Gonzalez Rodriguez,producción,Trabajador ambulante de servicios,2023-05-02,mañana,True
+1040,Mora Federico Gutierrez Gutierrez,logística,"Operador de máquinas de preparación de fibras, hilado y devanado",2020-11-18,mañana,True
+1041,Benicio Lopez,administración,Parquetero y colocador de suelos,2020-09-15,noche,True
+1042,Sr(a). Francisco Rojas,logística,Veterinario,2017-06-22,noche,True
+1043,Ciro Benjamin Sanchez Ferreyra,producción,Profesional de enfermería,2020-08-17,tarde,True
+1044,Josefina Paez Martinez,producción,Instalador y reparador de líneas eléctricas,2018-02-10,noche,True
+1045,Federico Suarez Gimenez,logística,Recepcionista de hoteles,2019-11-12,tarde,True
+1046,Nahuel Gomez Rios,administración,Moldeador y machero,2023-05-07,tarde,True
+1047,Sr(a). Mateo Benjamin Lopez,administración,Empalmador de cables,2022-04-20,noche,True
+1048,Sr(a). Juan Cardozo,producción,Operador de máquinas para fabricar productos de papel,2022-07-20,tarde,True
+1049,Sr(a). Franco Vera,logística,Miembro de las fuerzas armadas,2022-08-20,noche,True
+1050,Enzo Tomàs Ortiz Cruz,producción,Reponedor de estanterías,2017-11-29,noche,True
+1051,Tiziano Valentin Nuñez Gonzalez,ventas,Director de servicios de cuidado de las personas de edad,2023-09-02,noche,True
+1052,Victoria Cordoba,administración,Técnico de telecomunicaciones,2019-02-26,tarde,True
+1053,Sofia Santiago Benjamin Aguero Navarro,ventas,Acarreador de agua,2022-10-18,tarde,True
+1054,Valentina Gomez Valdez,administración,"Pescador, cazador, tramperos y recolector de subsistencia",2023-08-18,tarde,True
+1055,Tiziano Bruno Garcia Farias,administración,Constructor de casas,2019-06-29,mañana,True
+1056,Dr(a). Milena Gonzalez,logística,Audiólogo,2020-01-20,tarde,True
+1057,Valentino Juan Gabriel Benitez,producción,Instalador de material aislante y de insonorización,2017-01-18,tarde,True
+1058,Manuel Ortiz,administración,Tronzador,2023-03-23,tarde,True
+1059,Isabella Hernandez Peralta,producción,Vendedor ambulantes de productos comestibles,2017-03-21,mañana,True
+1060,Salvador Benjamin Muñoz,logística,Mecánico-montador de instalaciones de refrigeración y climatización,2022-07-19,mañana,True
+1061,Sr(a). Guadalupe Herrera,administración,Técnico en ingeniería civil,2022-05-03,mañana,True
+1062,Martina Francisca Nuñez,logística,Ingeniero mecánico,2018-11-13,mañana,True
+1063,Benjamin Escobar Fernandez,ventas,Colchonero,2018-06-10,noche,True
+1064,Dr(a). Valentina  Muñoz,producción,Trabajador agrícola de subsistencia,2016-12-12,noche,True
+1065,Sr(a). Alma Jazmin Rodriguez,producción,Vendedor por teléfono,2019-10-07,noche,True
+1066,Dr(a). Morena Cabrera,ventas,Filósofo,2021-05-31,tarde,True
+1067,Santino Benjamin Ezequiel Cruz,ventas,Secretario (general),2022-02-11,tarde,True
+1068,Francesca Lopez,producción,"Operario de la conservación de frutas, legumbres y verduras",2016-12-21,noche,True
+1069,Dr(a). Victoria Molina,logística,Decorador de interior,2022-02-17,noche,True
+1070,Santiago Santino Peralta Ferreyra,logística,Director de cine,2018-02-22,mañana,True
+1071,Dr(a). Martin Benitez,ventas,Oficinista general,2024-04-12,tarde,True
+1072,Benjamin Ezequiel Catalina Ledesma,ventas,Pescadero,2015-09-02,tarde,True
+1073,Luz Maria Mateo Paz Ferreyra,ventas,Conductor de tranvía,2016-03-06,tarde,True
+1074,Dr(a). Bruno Olivera,ventas,Marinero de cubierta,2017-02-17,mañana,True
+1075,Alma Matias Mansilla Alvarez,ventas,Parquetero y colocador de suelos,2023-11-09,noche,True
+1076,Sr(a). Victoria Gomez,administración,Joyero,2022-06-08,mañana,True
+1077,Ciro Benjamin Aguirre,logística,Guardafrenos,2018-04-08,noche,True
+1078,Valentino Emilia Luna,logística,Ingeniero industrial,2024-06-12,mañana,True
+1079,Felicitas Gutierrez Ruiz,producción,Agente de administración tributaria,2023-01-20,mañana,True
+1080,Emiliano Silva Romero,producción,Montador de estructuras metálicas,2017-09-03,tarde,True
+1081,Nina Lorenzo Alvarez,producción,Peón de la construcción de edificios,2017-01-26,noche,True
+1082,Alma Camila Fernandez,producción,Maestro de enseñanza primaria,2022-10-26,tarde,True
+1083,Dr(a). Emanuel Lopez,producción,Peón de carga,2015-12-11,mañana,True
+1084,Lautaro Lautaro Nahuel Aguirre,producción,Prestamista,2022-02-26,mañana,True
+1085,Josefina Benitez,logística,Operador de instalaciones para la preparación de pasta para papel y papel,2025-03-09,mañana,True
+1086,Emilia Ortiz,administración,Empleado de archivos,2024-09-19,tarde,True
+1087,Julian Delfina Sanchez Fernandez,administración,Corrector de pruebas de imprenta,2021-07-12,tarde,True
+1088,Dr(a). Salvador Rodriguez,ventas,Pescador de alta mar,2020-03-31,tarde,True
+1089,Tomas Ana Paula Rodriguez Sosa,producción,Sombrerero,2023-02-21,mañana,True
+1090,Rosario Gomez Navarro,administración,Auxiliar de maestro,2025-08-02,noche,True
+1091,Dr(a). Mateo Ezequiel Barrios,ventas,Recepcionista,2016-04-29,tarde,True
+1092,Tomas Guillermina Leiva,logística,Antropólogo,2018-09-12,mañana,True
+1093,Valentina  Salvador Rivero,producción,Instructor de autoescuela,2025-05-02,tarde,True
+1094,Manuel Benjamin Vera Rios,ventas,Prestamista,2019-05-17,noche,True
+1095,Carmela Acosta,producción,Auxiliar de maestro,2024-10-21,tarde,True
+1096,Sr(a). Ciro Acosta,logística,Oficial de cubierta,2025-02-13,noche,True
+1097,Bruno Perez,ventas,Miembro del poder legislativo,2016-08-28,noche,True
+1098,Ian Benjamin Ezequiel Correa,logística,Recolector de leña,2017-03-15,tarde,True
+1099,Augusto Benicio Castro,logística,Especialista en formación del personal,2025-01-15,mañana,True
+1100,Benjamin Flores Lopez,producción,Profesor de universidades y de la enseñanza superior,2018-01-18,tarde,True
+1101,Sr(a). Angel Gabriel Lopez,administración,Agrónomo,2024-11-27,tarde,True
+1102,Josefina Rios,logística,Ingeniero medioambiental,2016-08-15,noche,True
+1103,Victoria Castillo Gimenez,logística,Ingeniero metalúrgico,2023-10-10,tarde,True
+1104,Candelaria Lucía Chavez,logística,Agente de seguros,2018-02-25,noche,True
+1105,Santino Renzo Hernandez,producción,Director de ventas y comercialización,2018-12-15,mañana,True
+1106,Tomàs Simon Fernandez Ortiz,administración,Instructor de autoescuela,2021-04-13,noche,True
+1107,Nina Emilia Quiroga Muñoz,administración,Vendedor de comidas al mostrador,2019-12-19,mañana,True
+1108,Dr(a). Helena Fernandez,producción,Representante comercial,2022-04-25,noche,True
+1109,Alma Emma Rodriguez,administración,Árbitro deportivo,2020-01-12,tarde,True
+1110,Jeremias Dante Ortiz,ventas,Inspector de policía,2018-01-06,noche,True
+1111,Ciro Medina,ventas,Director de teatro,2016-11-07,mañana,True
+1112,Luciana Garcia Martinez,producción,Entrevistador de encuestas,2025-08-17,mañana,True
+1113,Josefina Mendez,ventas,Empleado encargado de las nóminas,2018-09-25,mañana,True
+1114,Dr(a). Juan Manuel Perez,ventas,Historiador,2022-02-10,mañana,True
+1115,Bautista Lucas Maidana Fernandez,administración,Director de servicios de salud,2016-02-09,mañana,True
+1116,Sr(a). Ana Paula Dominguez,ventas,Policías,2016-07-19,noche,True
+1117,Milena Martinez Gonzalez,ventas,Archivista,2019-04-07,tarde,True
+1118,Francisco Guillermina Flores,producción,Recepcionista,2017-11-03,tarde,True
+1119,Santino Josefina Pereyra,administración,Administrador de sistemas,2016-03-30,mañana,True
+1120,Joaquin Olivia Gimenez,logística,Cajero de banco,2025-01-18,mañana,True
+1121,Tomas Maximo Roldan Gonzalez,logística,Agente de servicios de seguridad social,2021-11-29,tarde,True
+1122,Abril Garcia Farias,logística,Instructor en tecnologías de la información,2021-09-14,mañana,True
+1123,Sara Gimenez Paez,administración,Trabajador forestal calificado,2018-01-26,noche,True
+1124,Felipe Farias Moreno,logística,Cazador,2019-09-08,noche,True
+1125,Sr(a). Dante Muñoz,ventas,Encuadernador,2020-04-29,mañana,True
+1126,Fausto Thiago Nicolas Castro Suarez,logística,Delineante,2016-05-24,mañana,True
+1127,Lautaro Benjamin Felipe Villalba Toledo,ventas,Técnico en química industrial,2016-05-10,tarde,True
+1128,Juliana Ivan Ramos,producción,Tronzador,2019-12-06,mañana,True
+1129,Dr(a). Lorenzo Rojas,administración,Cortador de vidrio,2016-06-20,tarde,True
+1130,Camilo Morales,logística,Mayordomo doméstico,2020-07-27,mañana,True
+1131,Lourdes Ruiz Dominguez,producción,Miembro de las fuerzas armadas,2025-08-15,tarde,True
+1132,Isabella Sofia Cabrera,administración,Modelador de vidrio,2023-01-18,tarde,True
+1133,Benjamin Luna Hernandez,administración,Gerente general,2022-06-23,mañana,True
+1134,Alvaro Suarez Ponce,producción,Profesional de la publicidad y la comercialización,2018-01-03,tarde,True
+1135,Facundo Felicitas Lucero Correa,administración,Empleado de contabilidad y cálculo de costos,2025-02-03,tarde,True
+1136,Thiago Ramiro Gomez Roldan,ventas,Mandader,2019-08-09,tarde,True
+1137,Bautista Agustin Luna,logística,Catador de bebidas,2018-06-17,tarde,True
+1138,Thiago Agustin Gomez Ojeda,logística,"Operador de máquinas pulidoras, galvanizadoras y recubridoras de metales ",2018-02-28,mañana,True
+1139,Pilar Flores,logística,Agente de bolsa,2016-11-10,mañana,True
+1140,Uma Torres Lopez,producción,Guardián de prisión,2020-03-13,tarde,True
+1141,Valentina Gonzalez,logística,Operador de instalaciones de procesamiento de metales,2024-12-05,noche,True
+1142,Thiago Leonel Vega Ledesma,logística,Técnico en ingeniería de minas y metalurgia,2021-01-11,tarde,True
+1143,Octavio Martinez Benitez,ventas,Profesional de nivel medio de enfermería,2017-03-18,mañana,True
+1144,Sr(a). Benjamin Figueroa,ventas,Secretario jurídicos,2022-11-01,mañana,True
+1145,Federico Tiziano Valentin Acosta Avila,producción,Buzo,2021-05-05,noche,True
+1146,Vicente Benjamin Gonzalez,logística,Especialista en ciencias políticas,2016-04-02,noche,True
+1147,Renata Molina Diaz,logística,Instalador y reparador de líneas eléctricas,2023-09-17,mañana,True
+1148,Maria Victoria Gonzalez Diaz,administración,Piloto de aviación,2019-09-12,mañana,True
+1149,Francisco Cordoba,logística,Pulidor de metales y afilador de herramientas,2023-06-24,noche,True
+1150,Rosario Acosta Medina,producción,Farmacéutico,2025-06-01,noche,True
+1151,Santiago Campos,ventas,Diseñador de bases de datos,2019-10-12,tarde,True
+1152,Catalina Duarte Valdez,administración,Cristalero,2016-01-22,noche,True
+1153,Guillermina Fernandez Olivera,administración,Técnico en redes y sistemas de computadores,2024-06-02,mañana,True
+1154,Sr(a). Salvador Acosta,producción,Camarero de mesa,2023-07-12,tarde,True
+1155,Dr(a). Benjamin Suarez,logística,Técnico en documentación sanitaria,2021-01-20,noche,True
+1156,Benicio Flores Molina,administración,Minero,2018-08-12,mañana,True
+1157,Maximo Gonzalez,ventas,Profesional de la protección medioambiental,2023-03-24,tarde,True
+1158,Thiago Ramirez Guzman,producción,Camarero de barra,2023-11-06,mañana,True
+1159,Salvador Mia Peralta,logística,Perforador y sondista de pozos,2020-11-20,noche,True
+1160,Thiago Benjamin Alejo Ortiz Gimenez,ventas,Controlador de tráfico aéreo,2024-07-11,tarde,True
+1161,Thiago Gabriel Geronimo Velazquez Lopez,administración,Instructor de educación física y actividades recreativas,2024-04-27,mañana,True
+1162,Thiago Julia Vega Gutierrez,administración,Guardián de prisión,2023-06-17,noche,True
+1163,Guillermina Rivero,producción,Dentista,2022-01-23,noche,True
+1164,Sr(a). Olivia Gomez,administración,Cortador de vidrio,2022-07-27,tarde,True
+1165,Tiziano Valentin Felipe Gomez,administración,Modisto,2019-08-07,mañana,True
+1166,Juana Paloma Gomez Gonzalez,administración,Supervisor de industria manufacturera,2017-08-16,tarde,True
+1167,Thiago Benjamin Agustín Fernandez,administración,Asistente veterinario,2022-06-06,mañana,True
+1168,Valentina Medina Pereyra,ventas,Pulidor de vidrio,2018-11-22,noche,True
+1169,Mateo Thiago Fernandez Valdez,producción,Director de cine,2022-04-10,mañana,True
+1170,Sofia Lopez,logística,Cajero,2017-06-09,mañana,True
+1171,Manuel Romero Ruiz,logística,Marinero de cubierta,2025-01-05,tarde,True
+1172,Lucas Guzman Pereyra,administración,Desarrollador de software,2023-11-04,tarde,True
+1173,Ciro Guadalupe Perez,administración,Técnico en asistencia al usuario de tecnología de la información y las comunicaciones,2019-01-26,mañana,True
+1174,Dr(a). Tiziano Navarro,logística,Compositor,2017-05-08,noche,True
+1175,Dr(a). Benicio Martinez,ventas,Gerente general,2020-03-03,mañana,True
+1176,Milo Sofia Benitez Peralta,ventas,Psicólogo,2016-07-08,tarde,True
+1177,Dr(a). Catalina Ortiz,logística,Operador de instalaciones para la preparación de pasta para papel y papel,2020-05-26,noche,True
+1178,Francisco Figueroa,administración,Director financiero,2015-09-27,noche,True
+1179,Mateo Lorenzo Sosa Sosa,administración,Auxiliar de servicio de abordo,2020-02-17,noche,True
+1180,Dr(a). Sol Suarez,administración,Director de producción agropecuaria y silvicultura,2025-07-04,tarde,True
+1181,Facundo Isabella Gonzalez Diaz,ventas,Antropólogo,2017-08-12,tarde,True
+1182,Pedro Martina Roldan,administración,Escribiente público,2015-10-26,mañana,True
+1183,Amparo Federico Bravo Sosa,producción,Profesional del trabajo social,2025-01-08,tarde,True
+1184,Olivia Medina Herrera,ventas,Juez,2017-01-14,mañana,True
+1185,Rosario Bautista Miranda Gonzalez,logística,Técnico en ingeniería de minas y metalurgia,2024-01-24,mañana,True
+1186,Lautaro Lopez Moyano,logística,Oficial de préstamos y créditos,2015-12-30,tarde,True
+1187,Lorenzo Gonzalez Peralta,ventas,Criador de ganado,2017-12-26,tarde,True
+1188,Dr(a). Santiago Duarte,ventas,Empleado de servicios de transporte,2017-01-28,mañana,True
+1189,Lola Chavez Fernandez,administración,Demostrador de tiendas,2019-06-16,tarde,True
+1190,Juan Bautista Maria Emilia Lucero,administración,Soplador de vidrio,2023-05-02,mañana,True
+1191,Bautista Muñoz Gimenez,administración,Delineante,2025-07-18,tarde,True
+1192,Facundo Bustos,ventas,Trabajador forestal calificado,2018-12-15,mañana,True
+1193,Angelina Guillermina Duarte,logística,Ingeniero mecánico,2016-04-30,noche,True
+1194,Dr(a). Faustino Perez,administración,Técnico de laboratorio médico,2017-10-03,tarde,True
+1195,Justina Santino Torres,ventas,Veterinario,2015-08-30,noche,True
+1196,Juan Ignacio Castillo Villalba,ventas,Peón de la construcción de edificios,2019-11-19,noche,True
+1197,Nahuel Genaro Lopez,logística,Fotógrafo,2025-04-16,noche,True
+1198,Delfina Benjamin Farias Perez,producción,Herrero,2023-03-19,tarde,True
+1199,Catalina Gonzalez,logística,Profesor de enseñanza secundaria,2022-04-21,mañana,True
+2222,Ana Gómez,producción,,,,True
+3333,María López,ventas,,,,True
+4444,Juan Pérez,logística,,,,True
+5555,Lucía Fernández,producción,,,,True

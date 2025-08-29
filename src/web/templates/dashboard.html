@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard RRHH - Sistema de Ausencias</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .refresh-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.2s;
+        }
+
+        .refresh-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filters {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .filter-label {
+            font-size: 0.8rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .filter-select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            min-width: 150px;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 1rem 1.5rem;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 0.75rem;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-completo { background: #d4edda; color: #155724; }
+        .badge-pendiente { background: #fff3cd; color: #856404; }
+        .badge-rechazado { background: #f8d7da; color: #721c24; }
+        .badge-en_revision { background: #cce5ff; color: #004085; }
+        
+        .priority-alta { background: #f8d7da; color: #721c24; }
+        .priority-media { background: #fff3cd; color: #856404; }
+        .priority-baja { background: #d4edda; color: #155724; }
+
+        .validation-required {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .validation-ok {
+            color: #28a745;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+            border: 1px solid #f5c6cb;
+        }
+
+        .auto-refresh {
+            font-size: 0.8rem;
+            color: #666;
+            margin-left: 1rem;
+        }
+
+        .cert-btn {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+        }
+
+        .cert-btn-view {
+            background: #007bff;
+        }
+
+        .cert-btn-view:hover {
+            background: #0056b3;
+            color: white;
+        }
+
+        .cert-btn-unavailable {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 Dashboard RRHH - Sistema de Ausencias</h1>
+        <div>
+            <button class="refresh-btn" onclick="loadData()">🔄 Actualizar</button>
+            <span class="auto-refresh" id="autoRefreshStatus">Auto-refresh: ON</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Estadísticas Resumidas -->
+        <div class="stats-grid" id="statsContainer">
+            <div class="stat-card">
+                <div class="stat-value" id="totalAusencias">-</div>
+                <div class="stat-label">Total Ausencias</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="ausenciasActivas">-</div>
+                <div class="stat-label">Activas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="requierenValidacion">-</div>
+                <div class="stat-label">Requieren Validación</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="certificadosPendientes">-</div>
+                <div class="stat-label">Certificados Pendientes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="completadas">-</div>
+                <div class="stat-label">Completadas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="altaPrioridad">-</div>
+                <div class="stat-label">Alta Prioridad</div>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filters">
+            <div class="filter-group">
+                <label class="filter-label">Estado</label>
+                <select id="filtroEstado" class="filter-select" onchange="applyFilters()">
+                    <option value="">Todos los estados</option>
+                    <option value="completo">Completo</option>
+                    <option value="incompleto">Incompleto</option>
+                    <option value="pendiente_validacion">Requiere Validación</option>
+                    <option value="rechazado">Rechazado</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Motivo</label>
+                <select id="filtroMotivo" class="filter-select" onchange="applyFilters()">
+                    <option value="">Todos los motivos</option>
+                    <option value="enfermedad_inculpable">Enfermedad Inculpable</option>
+                    <option value="enfermedad_familiar">Enfermedad Familiar</option>
+                    <option value="art">ART</option>
+                    <option value="fallecimiento">Fallecimiento</option>
+                    <option value="nacimiento">Nacimiento</option>
+                    <option value="matrimonio">Matrimonio</option>
+                    <option value="paternidad">Paternidad</option>
+                    <option value="permiso_gremial">Permiso Gremial</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Fecha</label>
+                <select id="filtroFecha" class="filter-select" onchange="applyFilters()">
+                    <option value="todos">Todos</option>
+                    <option value="hoy">Hoy</option>
+                    <option value="3dias">Últimos 3 días</option>
+                    <option value="semana">Última semana</option>
+                    <option value="mes">Último mes</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Sector</label>
+                <select id="filtroSector" class="filter-select" onchange="applyFilters()">
+                    <option value="">Todos los sectores</option>
+                    <option value="producción">Producción</option>
+                    <option value="logística">Logística</option>
+                    <option value="administración">Administración</option>
+                    <option value="ventas">Ventas</option>
+                    <option value="sistemas">Sistemas</option>
+                    <option value="recursos_humanos">Recursos Humanos</option>
+                    <option value="sin asignar">Sin asignar</option>
+                    <option value="N/A">No disponible</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Tabla Principal -->
+        <div class="table-container">
+            <div class="table-header">
+                <div class="table-title">📋 Listado de Ausencias</div>
+                <div id="recordCount">Cargando...</div>
+            </div>
+            
+            <div id="errorMessage" class="error" style="display: none;"></div>
+            
+            <div class="table-responsive">
+                <div id="loadingMessage" class="loading">🔄 Cargando datos...</div>
+                <table id="ausenciasTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>ID Aviso</th>
+                            <th>Empleado</th>
+                            <th>Área</th>
+                            <th>Motivo</th>
+                            <th>Fecha Inicio</th>
+                            <th>Duración</th>
+                            <th>Estado</th>
+                            <th>Certificado</th>
+                            <th>Ver Certificado</th>
+                            <th>Validación RRHH</th>
+                            <th>Prioridad</th>
+                            <th>Acción Requerida</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ausenciasTableBody">
+                    </tbody>
+                </table>
+                <div id="noDataMessage" class="no-data" style="display: none;">
+                    📭 No se encontraron ausencias con los filtros aplicados
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let ausenciasData = [];
+        let autoRefreshTimer;
+        
+        // Cargar datos iniciales al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            startAutoRefresh();
+        });
+
+        async function loadStats() {
+            try {
+                const response = await fetch('/api/stats');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const stats = data.stats;
+                    document.getElementById('totalAusencias').textContent = stats.total_ausencias || 0;
+                    document.getElementById('ausenciasActivas').textContent = stats.ausencias_activas || 0;
+                    document.getElementById('requierenValidacion').textContent = stats.requieren_validacion || 0;
+                    document.getElementById('certificadosPendientes').textContent = stats.certificados_pendientes || 0;
+                    document.getElementById('completadas').textContent = stats.completadas || 0;
+                    document.getElementById('altaPrioridad').textContent = stats.alta_prioridad || 0;
+                }
+            } catch (error) {
+                console.error('Error cargando estadísticas:', error);
+            }
+        }
+
+        async function loadAusencias(filters = {}) {
+            try {
+                showLoading();
+                
+                // Construir URL con filtros
+                const params = new URLSearchParams();
+                if (filters.estado) params.append('estado', filters.estado);
+                if (filters.motivo) params.append('motivo', filters.motivo);
+                if (filters.filtro_fecha) params.append('filtro_fecha', filters.filtro_fecha);
+                if (filters.area) params.append('area', filters.area);
+                params.append('limit', '200');
+                
+                const response = await fetch(`/api/ausencias?${params}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    ausenciasData = data.data;
+                    renderTable(ausenciasData);
+                    document.getElementById('recordCount').textContent = `${data.count} registros`;
+                } else {
+                    showError('Error cargando datos: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Error de conexión al servidor');
+            }
+        }
+
+        async function loadData() {
+            await Promise.all([loadStats(), loadAusencias()]);
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('ausenciasTableBody');
+            const table = document.getElementById('ausenciasTable');
+            const loading = document.getElementById('loadingMessage');
+            const noData = document.getElementById('noDataMessage');
+            
+            if (data.length === 0) {
+                table.style.display = 'none';
+                loading.style.display = 'none';
+                noData.style.display = 'block';
+                return;
+            }
+
+            tbody.innerHTML = '';
+            
+            data.forEach(ausencia => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td><strong>${ausencia.id_aviso}</strong></td>
+                    <td>
+                        <div><strong>${ausencia.nombre_empleado}</strong></div>
+                        <div style="font-size: 0.8rem; color: #666;">Leg: ${ausencia.legajo}</div>
+                    </td>
+                    <td>${ausencia.area}</td>
+                    <td>${formatMotivo(ausencia.motivo)}</td>
+                    <td>${formatDate(ausencia.fecha_inicio)}</td>
+                    <td>${ausencia.dias_estimados || '-'} días</td>
+                    <td><span class="badge badge-${ausencia.estado_aviso}">${formatEstado(ausencia.estado_aviso)}</span></td>
+                    <td><span class="badge badge-${ausencia.estado_certificado.toLowerCase()}">${formatEstado(ausencia.estado_certificado)}</span></td>
+                    <td>${renderCertificateButton(ausencia)}</td>
+                    <td><span class="${ausencia.requiere_validacion_rrhh ? 'validation-required' : 'validation-ok'}">${ausencia.requiere_validacion_rrhh ? 'Requerida' : 'OK'}</span></td>
+                    <td><span class="badge priority-${ausencia.prioridad}">${ausencia.prioridad.toUpperCase()}</span></td>
+                    <td style="font-weight: 500; color: #495057;">${ausencia.accion_requerida}</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            table.style.display = 'table';
+            loading.style.display = 'none';
+            noData.style.display = 'none';
+        }
+
+        function formatMotivo(motivo) {
+            const motivos = {
+                'enfermedad_inculpable': 'Enfermedad Inculpable',
+                'art': 'ART',
+                'licencia_familiar': 'Licencia Familiar',
+                'vacaciones': 'Vacaciones',
+                'personal': 'Personal'
+            };
+            return motivos[motivo] || motivo;
+        }
+
+        function formatEstado(estado) {
+            const estados = {
+                'completo': 'Completo',
+                'pendiente': 'Pendiente',
+                'en_revision': 'En Revisión',
+                'rechazado': 'Rechazado',
+                'validado': 'Validado'
+            };
+            return estados[estado] || estado;
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '-';
+            try {
+                return new Date(dateStr).toLocaleDateString('es-ES');
+            } catch {
+                return dateStr;
+            }
+        }
+
+        function applyFilters() {
+            const estado = document.getElementById('filtroEstado').value;
+            const motivo = document.getElementById('filtroMotivo').value;
+            const fecha = document.getElementById('filtroFecha').value;
+            const sector = document.getElementById('filtroSector').value;
+            
+            const filters = {};
+            if (estado) filters.estado = estado;
+            if (motivo) filters.motivo = motivo;
+            if (fecha && fecha !== 'todos') filters.filtro_fecha = fecha;
+            if (sector) filters.area = sector;
+            
+            loadAusencias(filters);
+        }
+
+        function showLoading() {
+            document.getElementById('loadingMessage').style.display = 'block';
+            document.getElementById('ausenciasTable').style.display = 'none';
+            document.getElementById('noDataMessage').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('errorMessage').style.display = 'block';
+            document.getElementById('loadingMessage').style.display = 'none';
+        }
+
+        function startAutoRefresh() {
+            autoRefreshTimer = setInterval(() => {
+                loadData();
+                console.log('Auto-refresh ejecutado');
+            }, 30000); // 30 segundos
+        }
+
+        function stopAutoRefresh() {
+            if (autoRefreshTimer) {
+                clearInterval(autoRefreshTimer);
+                autoRefreshTimer = null;
+            }
+        }
+
+        function renderCertificateButton(ausencia) {
+            // Check if this absence has a certificate requirement and status
+            const needsCertificate = ['enfermedad_inculpable', 'enfermedad_familiar'].includes(ausencia.motivo);
+            const hasCertificate = ausencia.estado_certificado && 
+                                  ausencia.estado_certificado !== 'N/A' && 
+                                  ausencia.estado_certificado !== 'pendiente';
+            
+            if (needsCertificate && hasCertificate) {
+                return `<a href="/api/certificado/${ausencia.id_aviso}" 
+                          target="_blank" 
+                          class="cert-btn cert-btn-view">
+                          📄 Ver
+                        </a>`;
+            } else if (needsCertificate) {
+                return `<span class="cert-btn cert-btn-unavailable">Sin certificado</span>`;
+            } else {
+                return `<span style="font-size: 0.8rem; color: #666;">No requerido</span>`;
+            }
+        }
+
+        // Control de visibilidad de la página para pausar auto-refresh
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                stopAutoRefresh();
+            } else {
+                startAutoRefresh();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -156,3 +156,21 @@ def kb_vinculo_familiar(*, as_text: bool = False) -> Any:
 		input_field_placeholder="Elegí vínculo…",
 	)
 	return keyboard
+
+
+def kb_legajo_provisional(*, as_text: bool = False) -> Any:
+	"""Teclado para opciones de legajo provisional.
+	
+	Opciones: Continuar provisional / Reingresar legajo.
+	"""
+	labels = ["Continuar provisional", "Reingresar legajo"]
+	if as_text or not exists_aiogram:
+		return " / ".join(labels)
+	row = [KeyboardButton(text=l) for l in labels]
+	keyboard = ReplyKeyboardMarkup(
+		keyboard=[row],
+		resize_keyboard=True,
+		one_time_keyboard=True,
+		input_field_placeholder="Elegí una opción…",
+	)
+	return keyboard
